@@ -8,9 +8,14 @@ Universitat de Barcelona | Universidad de Sevilla
 
 September 7, 2022
 
-Questions related to the cycle computation code:
-Questions related to the implementation of $\mathbb{S}^D$ surrogates Computation of cycles code related questions: palmagro@us.es
+Questions related to the cycle computation code: marian.serrano@ub.edu
+Questions related to the $\mathbb{S}^D$ surrogate generator: palmagro@us.es
 
-Requirements:
+## Cycle calculation (cyclesmap)
 
+Building cyclesmap:
+
+
+
+## $\mathbb{S}^D$ surrogate generator
 
