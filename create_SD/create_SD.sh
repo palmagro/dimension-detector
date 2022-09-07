@@ -1,3 +1,18 @@
+# Script to generate SD surrogates of a given network. 
+# 
+# The script requires an edgelist of the given network and a parameter setting.
+# 
+# Parameters:
+# 
+# - network: name of the network (edgelist file must be located in RealNets folder with edge extension and features file in RealFeats with csv extension)
+# - resolution: number of surrogates per dimension
+# - n_poll: number of points used to infer the relation T vs. Beta
+# - wsize: size of the clustering interval in which to create the surrogates
+# - nrealizations: number of realizations per random Beta value (default=1)  
+# - maxD: the script will generate surrogates from D=1 to D=maxD
+# 
+# The resulting surrogates will be placed in SDnets folder. Some folders will be created during the process for calculation purposes.
+# 
 ########### PART 1: Infering relation T (proportion of triangles) vs. Beta ###########
 
 # Creating necessary folders
