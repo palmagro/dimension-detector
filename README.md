@@ -22,20 +22,21 @@ The workflow to detect the optimal dimension of a given network is:
 
 1. Generate the folder with the surrogates of the network:
 
-./create_SD/create_SD.sh *network* *resolution* *n_poll* *wsize* *nrealizations* *maxD*
+    ./create_SD/create_SD.sh *network* *resolution* *n_poll* *wsize* *nrealizations* *maxD*
 
 2. To obtain the feature maps of the surrogates, execute (from the FMC-UB cluster) from bash using the surrogates generated in the previous step:
 
- crete_feats SDnets/network SDfeats/network
+    ./crete_feats.sh SDnets/network SDfeats/network
 
 3. Execute using Python and the feature maps obtained in the previous step:
 
-dimension("SDfeats/network",network_features,predictors,maxk)
+    python dimension.py "SDfeats/network" network_features predictors maxk
 
 The following is a brief description of the three blocks (more information can be found in the corresponding sh and py files)
 
-########## create_SD.sh ###########
-Script to generate surrogates of a given network. We assume clustering (T) as proportion of triangles calculated in cyclesmap fortran script. 
+# create_SD.sh 
+
+Script to generate $\mathbb{S}^D$  surrogates of a given network. We assume clustering (T) as proportion of triangles calculated in cyclesmap fortran script. 
 
 The script requires an edgelist of the given network and a file containing a description of its features obtained with cyclesmap fortran script. 
 
@@ -47,35 +48,25 @@ Parameters:
 - resolution: number of surrogates per dimension
 - n_poll: number of points used to infer the relation T vs. Beta
 - wsize: size of the clustering interval in which to create the surrogates
-- nrealizations: number of realizations per random Beta value (default=1).  
+- nrealizations: number of realizations per random Beta value (default=1)  
 - maxD: the script will generate surrogates from D=1 to D=maxD
 
 The resulting surrogates will be placed in RealSD folder. RealFeats folder is used for calculation purposes.
 
-########### create_feats.sh ###########
-# Script to generate feature maps of a set of surrogates using cyclesmap fortran script.
-#
-#
-# IMPORTANT: Tihs script is designed to work with FMC-UB cluster. Specifically, it is designed to work with nodes 33, 34, 35 and 36 (the ones -kown to date- that work properly). This script can create files and folders during its execution that can remain in the computer in order to increase the performance of future executions.
-#
-# Parameters:
-#
-# - surrogates folder: name of the folder containing surrogates (they should be organized by dimension, as obtained with create_SD.sh script)
-# - results folder: name of the destination folder to store the results
+# create_feats.sh 
 
-########### dimension.py ###########
-# Python library to infer the dimension of a network given a set of feature maps of its surrogates (generated with create_feats.sh script). 
-# The code requires a folder with surrogates organized by dimension, as obtained with create_feats.sh script. 
-#
-# This main function of this library is dimension(surrogate_set,network_features,predictors,maxk) that recieves a set of feature maps of surrogates of a network, the feature map of the network, a set of predictors (a subset of {'triangles', 'squares','pentagons'}) and a maximum value of k to explore (maxk) and returns the infered dimension for the given network, the value of k and the accuracy for the kNN method. surrogate_set indicates the name of te folder with surrogates organized by dimension, as obtained with create_feats.sh script. network_features indicates the name of a file containing the featuremaps of the network obtained with cyclesmap fortran script.
+Script to generate feature maps of a set of surrogates using cyclesmap fortran script.
 
+Parameters:
 
+- surrogates folder: name of the folder containing surrogates (they should be organized by dimension, as obtained with create_SD.sh script)
+- results folder: name of the destination folder to store the results
 
-## Cycle calculation (cyclesmap)
+# dimension-detector
 
-Building cyclesmap:
+Python library to infer the dimension of a network given a set of feature maps of its surrogates (generated with create_feats.sh script). 
+The code requires a folder with surrogates organized by dimension, as obtained with create_feats.sh script. 
 
+This main function of this library is dimension(surrogate_set,network_features,predictors,maxk) that recieves a set of feature maps of surrogates of a network, the feature map of the network, a set of predictors (a subset of {'triangles', 'squares','pentagons'}) and a maximum value of k to explore (maxk) and returns the infered dimension for the given network, the value of k and the accuracy for the kNN method. surrogate_set indicates the name of te folder with surrogates organized by dimension, as obtained with create_feats.sh script. network_features indicates the name of a file containing the featuremaps of the network obtained with cyclesmap fortran script.
 
-
-## $\mathbb{S}^D$ surrogate generator
 
