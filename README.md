@@ -31,7 +31,7 @@ The following is a brief description of the codes contained in each folder (more
 
 # cyclesmap
 
-Contains the program cyclesmap to calculate the number of chordless cycles of length 3,4 and 5 of a given network. 
+Contains the program *cyclesmap* to calculate the number of chordless cycles of length 3,4 and 5 of a given network. 
 
 Parameters:
 
@@ -39,42 +39,42 @@ Parameters:
 
 # create_SD
 
-Contains the script create_SD.sh to generate $\mathbb{S}^D$  surrogates of a given network. 
+Contains the script *create_SD.sh* to generate $\mathbb{S}^D$  surrogates of a given network. 
 
 The script requires an edgelist of the given network and a parameter setting.
 
 Parameters:
 
-- network: name of the network (edgelist file must be located in RealNets folder with edge extension and features file in RealFeats with csv extension)
-- resolution: number of surrogates per dimension
-- n_poll: number of points used to infer the relation T vs. Beta
-- wsize: size of the clustering interval in which to create the surrogates
-- nrealizations: number of realizations per random Beta value (default=1)  
-- maxD: the script will generate surrogates from D=1 to D=maxD
+- *network*: name of the network (edgelist file must be located in RealNets folder with edge extension and features file in RealFeats with csv extension)
+- *resolution*: number of surrogates per dimension
+- *n_poll*: number of points used to infer the relation T vs. Beta
+- *wsize*: size of the clustering interval in which to create the surrogates
+- *nrealizations*: number of realizations per random Beta value (default=1)  
+- *maxD*: the script will generate surrogates from D=1 to D=maxD
 
-The resulting surrogates will be placed in SDnets folder. Some folders will be created during the process for calculation purposes.
+The resulting surrogates will be placed in *SDnets* folder. Some folders will be created during the process for calculation purposes.
 
 # create_feats 
 
-Contains the script create_feats.sh to calculate chordless cycles from a set of surrogates.
+Contains the script *create_feats.sh* to calculate chordless cycles from a set of surrogates.
 
 Parameters:
 
-- surrogates folder: name of the folder containing surrogates (they should be organized by dimension, as obtained with create_SD.sh script)
-- results folder: name of the destination folder to store the results
+- *surrogates_folder*: name of the folder containing surrogates (they should be organized by dimension, as obtained with create_SD.sh script)
+- *results_folder*: name of the destination folder to store the results
 
 # dimension
 
-This folder contains the dimension.py Python library which provides functions to infer the optimal dimension of a network given a set of features (chordless cycles counts) of its surrogates.  The code requires a folder with surrogate features organized by dimension, as obtained with create_feats.sh script. 
+This folder contains the *dimension.py* Python library which provides functions to infer the optimal dimension of a network given a set of features (chordless cycles counts) of its surrogates.  The code requires a folder with surrogate features organized by dimension, as obtained with *create_feats.sh* script. 
 
-The main function of this library is dimension whith parameters:
+The main function of this library is *dimension* whith following parameters:
 
-- surrogate_set: the name of a folder with surrogate features organized by dimension, as obtained with create_feats.sh
-- network_features: the name of a file containing network features obtained with cyclesmap script
-- predictors: a set of predictors (a subset of ['triangles', 'squares','pentagons']) 
-- maxk: a maximum value of k to explore (maxk) 
+- *surrogate_set*: the name of a folder with surrogate features organized by dimension, as obtained with create_feats.sh
+- *network_features*: the name of a file containing network features obtained with cyclesmap script
+- *predictors*: a set of predictors (a subset of ['triangles', 'squares','pentagons']) 
+- *maxk*: a maximum value of k to explore (maxk) 
 
-This function and returns the optimal dimension for the given network, the value of k and the accuracy for the kNN method. 
+This function returns the optimal dimension for the given network, the value of *k* and the accuracy for the kNN method. 
 
 ----------------------------------------------------
 
