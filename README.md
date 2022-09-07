@@ -2,14 +2,6 @@
 Please see the original research associated with dimension-detector "Detecting the ultra low dimensionality of real
 networks" at XXX.
 
-Pedro Almagro, Marián Boguñá, M. Ángeles Serrano
-
-Universitat de Barcelona | Universidad de Sevilla
-
-September 7, 2022
-
-Questions related to code: palmagro@us.es
-
 This repository contains three folders:
 
 1. create_SD (Bash Script)
@@ -20,19 +12,20 @@ The first folder contains the code to obtain $\mathbb{S}^D$ surrogates of a give
 
 The workflow to detect the optimal dimension of a given network is:
 
-1. Generate the folder with the surrogates of the network:
+1. Generate thesurrogates of the network:
     ```sh
-    $ ./create_SD/create_SD.sh *network* *resolution* *n_poll* *wsize* *nrealizations* *maxD*
+    $ ./create_SD/create_SD.sh network resolution n_poll wsize nrealizations maxD
     ```
-2. To obtain the feature maps of the surrogates, execute (from the FMC-UB cluster) from bash using the surrogates generated in the previous step:
-
+2. Obtain the feature maps of the surrogates:
+    ```sh
     $ ./crete_feats.sh SDnets/network SDfeats/network
-
+    ```
 3. Execute using Python and the feature maps obtained in the previous step:
-
+    ```sh
     $ python dimension.py "SDfeats/network" network_features predictors maxk
-
-The following is a brief description of the three blocks (more information can be found in the corresponding sh and py files)
+    ```
+    
+The following is a brief description of the three blocks (more information can be found in the corresponding sh and py files).
 
 # create_SD.sh 
 
@@ -69,4 +62,13 @@ The code requires a folder with surrogates organized by dimension, as obtained w
 
 This main function of this library is dimension(surrogate_set,network_features,predictors,maxk) that recieves a set of feature maps of surrogates of a network, the feature map of the network, a set of predictors (a subset of {'triangles', 'squares','pentagons'}) and a maximum value of k to explore (maxk) and returns the infered dimension for the given network, the value of k and the accuracy for the kNN method. surrogate_set indicates the name of te folder with surrogates organized by dimension, as obtained with create_feats.sh script. network_features indicates the name of a file containing the featuremaps of the network obtained with cyclesmap fortran script.
 
+----------------------------------------------------
+
+Pedro Almagro, Marián Boguñá, M. Ángeles Serrano
+
+Universitat de Barcelona | Universidad de Sevilla
+
+September 7, 2022
+
+Questions related to code: palmagro@us.es
 
