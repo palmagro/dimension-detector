@@ -22,15 +22,15 @@ The workflow to detect the optimal dimension of a given network is:
 
 1. Generate the folder with the surrogates of the network:
 
-    ./create_SD/create_SD.sh *network* *resolution* *n_poll* *wsize* *nrealizations* *maxD*
+    $ ./create_SD/create_SD.sh *network* *resolution* *n_poll* *wsize* *nrealizations* *maxD*
 
 2. To obtain the feature maps of the surrogates, execute (from the FMC-UB cluster) from bash using the surrogates generated in the previous step:
 
-    ./crete_feats.sh SDnets/network SDfeats/network
+    $ ./crete_feats.sh SDnets/network SDfeats/network
 
 3. Execute using Python and the feature maps obtained in the previous step:
 
-    python dimension.py "SDfeats/network" network_features predictors maxk
+    $ python dimension.py "SDfeats/network" network_features predictors maxk
 
 The following is a brief description of the three blocks (more information can be found in the corresponding sh and py files)
 
