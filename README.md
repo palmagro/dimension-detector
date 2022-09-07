@@ -27,7 +27,7 @@ The workflow to detect the optimal dimension of a given network is:
     $ python -c'import dimension; dimension.dimension(SDfeats/network,network_features,["triangles", "squares","pentagons"],maxk)'
     ```
     
-The following is a brief description of the codes contained in each folder (more information can be found in the corresponding sh and py files).
+The following is a brief description of the codes contained in each folder (more information can be found in the corresponding *sh* and *py* files).
 
 # cyclesmap
 
@@ -35,7 +35,7 @@ Contains the program cyclesmap to calculate the number of chordless cycles of le
 
 Parameters:
 
-- The name of a file contaning an edge list of a network.
+- *network*: The name of a file contaning an edge list of a network.
 
 # create_SD
 
