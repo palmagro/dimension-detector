@@ -21,9 +21,9 @@ The first folder contains the code to obtain $\mathbb{S}^D$ surrogates of a give
 The workflow to detect the optimal dimension of a given network is:
 
 1. Generate the folder with the surrogates of the network:
-
+    ```sh
     $ ./create_SD/create_SD.sh *network* *resolution* *n_poll* *wsize* *nrealizations* *maxD*
-
+    ```
 2. To obtain the feature maps of the surrogates, execute (from the FMC-UB cluster) from bash using the surrogates generated in the previous step:
 
     $ ./crete_feats.sh SDnets/network SDfeats/network
