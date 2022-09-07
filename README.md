@@ -49,8 +49,8 @@ Parameters:
 - *resolution*: number of surrogates per dimension
 - *n_poll*: number of points used to infer the relation Clustering vs. 	$\beta$
 - *wsize*: size of the clustering interval in which to create the surrogates
-- *nrealizations*: number of realizations per random Beta value (default=1)  
-- *maxD*: the script will generate surrogates from D=1 to D=maxD
+- *nrealizations*: number of realizations per random 	$\beta$ value (default=1)  
+- *maxD*: the script will generate surrogates from $D$=1 to $D$=*maxD*
 
 The resulting surrogates will be placed in *SDnets* folder. Some folders will be created during the process for calculation purposes.
 
@@ -69,10 +69,10 @@ This folder contains the *dimension.py* Python library which provides functions 
 
 The main function of this library is *dimension* whith following parameters:
 
-- *surrogate_set*: the name of a folder with surrogate features organized by dimension, as obtained with create_feats.sh
+- *surrogate_set*: the name of a folder with surrogate features organized by dimension, as obtained with *create_feats.sh*
 - *network_features*: the name of a file containing network features obtained with cyclesmap script
 - *predictors*: a set of predictors (a subset of ['triangles', 'squares','pentagons']) 
-- *maxk*: a maximum value of k to explore (maxk) 
+- *maxk*: a maximum value of $k$ to explore 
 
 This function returns the optimal dimension for the given network, the value of *k* and the accuracy for the kNN method. 
 
