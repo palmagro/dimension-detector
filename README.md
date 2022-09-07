@@ -1,7 +1,7 @@
 # Detecting the ultra low dimensionality of real networks
 Please see the original research at XXX.
 
-This repository contains three folders:
+This repository contains four folders:
 
 1. cyclesmap: calculations of chordless cycles in a given network.
 2. create_SD: generation of $\mathbb{S}^D$ surrogates of a given network.
