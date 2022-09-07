@@ -1,6 +1,5 @@
-# dimension-detector
-Please see the original research associated with dimension-detector "Detecting the ultra low dimensionality of real
-networks" at XXX.
+# Detecting the ultra low dimensionality of real networks
+Please see the original research associated at XXX.
 
 This repository contains three folders:
 
