@@ -1,4 +1,5 @@
-* Calcualtes number of cycles in networks
+* Calculates number of chordless cycles in networks
+*corrected density in pentagons
 
       implicit double precision(x)
       character*90 filename,fileout,fileoutk
@@ -22,29 +23,42 @@
       CALL get_command_argument(1, filename)
       CALL get_command_argument(2, fileout)
 
-      !fileoutk='test_edgelist_0_degrees.dat'
-    
+
+*      filename='test.csv'
+*      fileout='test.dat'
+*      fileoutk='test_degrees.dat'
+
+!      filename='EUEmail.edge'
+!      fileout='EUEmail.dat'
+!      fileoutk='EUEmail_degrees.dat'
+
+*      filename='checkpentagone.txt'
+*      fileout='checkpentagone.dat'
+*      fileoutk='checkpentagone_degrees.dat'
+
       open(1,file=filename,status='unknown')
       NODOS=0
       nlist=0
       do while(.true.)
         read(1,*,END=10) i,j
-        ndegree(i)=ndegree(i)+1
-        ndegree(j)=ndegree(j)+1
-        nlist=nlist+1
-        nedge(nlist,1)=i
-        nedge(nlist,2)=j
-        if(i.gt.NODOS)then
-          NODOS=i
-        endif
-        if(j.gt.NODOS)then
-          NODOS=j
-        endif
+*        if(i.lt.j)then
+          ndegree(i)=ndegree(i)+1
+          ndegree(j)=ndegree(j)+1
+          nlist=nlist+1
+          nedge(nlist,1)=i
+          nedge(nlist,2)=j
+          if(i.gt.NODOS)then
+            NODOS=i
+          endif
+          if(j.gt.NODOS)then
+            NODOS=j
+          endif
+*        endif
       enddo
 10    continue
       close(1)
 
-      !      open(1,file=fileoutk,status='unknown')
+!            open(1,file=fileoutk,status='unknown')
             indexaux=1
             ndtot=0
             nodosreal=0
@@ -57,10 +71,10 @@
                ndtot=ndtot+ndegree(i)
                nodosreal=nodosreal+1
                xk=xk+ndegree(i)
-        !       write(1,*)ndegree(i)
+               write(1,*)i,ndegree(i)
              endif
             enddo
-       !     close(1)
+!            close(1)
             xk=xk/dble(nodosreal)
 
             do l=1,nlist
@@ -99,12 +113,12 @@
 
 *********cycles of edge
             nl1=0
-            squaresP=0
-            pentagonsP = 0
-
             xceiter=0.D0
             xsqiter=0.D0
             xpiter=0.D0
+            x2ceiter=0.D0
+            x2sqiter=0.D0
+            x2piter=0.D0
             ntt=0
             nts=0
             ntp=0
@@ -125,18 +139,21 @@
                  nodo4=nconnectivity(k2)
                  if(nodo3.eq.nodo4)then
                    mledge=mledge+1
-                   nvec(mledge)=nodo3
+                   nvec(mledge)=nodo3   !common neighbors
                  endif
                enddo
               enddo
               ntt=ntt+mledge
-              xceiter=xceiter+dble(mledge)/
+              xtrans=dble(mledge)/
      +         (DMIN1(dble(ndegree(nodo1)),dble(ndegree(nodo2)))-1.0D0)
+              xceiter=xceiter+xtrans
+              x2ceiter=x2ceiter+xtrans**2
+*              write(6,*)nodo1,nodo2,ndegree(nodo1),ndegree(nodo2),mledge
 
 *Calculating edge squares ...
-              if((ndegree(nodo1).ge.(mledge+1)).and.
-     +           (ndegree(nodo2).ge.(mledge+1)))then !if more than multiplicity
-              
+              if((ndegree(nodo1).gt.(mledge+1)).and.
+     +           (ndegree(nodo2).gt.(mledge+1)))then !if more than multiplicity
+
               do j=npunteroini(nodo1),npunterofin(nodo1)
                nodo3=nconnectivity(j)
                if(nodo3.ne.nodo2)then
@@ -183,65 +200,48 @@
               enddo
 
               nts=nts+msq
-              if((msq.gt.0))then
+              if(msq.gt.0)then
                nkc1=ndegree(nodo1)-mledge-1
                nkc2=ndegree(nodo2)-mledge-1
-               if((nkc1.gt.0).and.(nkc2.gt.0))then
-                   squaresP=squaresP+1
-                   xledge=dble(msq)/(dble(nkc1)*dble(nkc2))
-               else
-                   xledge=0.D0
-               endif
+               xledge=dble(msq)/(dble(nkc1)*dble(nkc2))
+*            write(6,*)'normalization squares ',msq,nkc1,nkc2
               else
                 xledge=0.D0
               endif
               xsqiter=xsqiter+xledge
+              x2sqiter=x2sqiter+xledge**2
 
               endif !endif more than multiplicity
 
 *Calculating edge pentagones ...
-              if((ndegree(nodo1).ge.(mledge+1)).and.
-     +           (ndegree(nodo2).ge.(mledge+1)))then !Si los dos nodos tienen vecinos que no sean comunes ni ellos
+              if((ndegree(nodo1).gt.(mledge+1)).and.
+     +           (ndegree(nodo2).gt.(mledge+1)))then !if more than m in p
+!normalization: sum[(k_n1-1)*(k_n2-1)] where n1 are neighbors of i different from j, n2 are neighbors of j different from i, n1.ne.n2 (no common neighbors),and n1 and n2 not connected (do not form a square)
 
-               ndsv1=0
-               do j2=npunteroini(nodo1),npunterofin(nodo1) !iteramos por los vecinos de nodo1 (nodo3)
+               ndsv1=0 !adding neighbors of node1 which are not in triangles with node2 and with degree >1
+               do j2=npunteroini(nodo1),npunterofin(nodo1)
                nodo3=nconnectivity(j2)
-               if(ndegree(nodo3).gt.1)then !si el grado de nodo 3 es mayor que 1 y no es el nodo2
+               if(ndegree(nodo3).gt.1)then
                if(nodo3.ne.nodo2)then
                  nsn=0
                  do k3=1,mledge
-                   if(nvec(k3).eq.nodo3)then !verificamos que no sea un vecino comun de nodo1 y nodo2
-                     nsn=1
+                   if(nvec(k3).eq.nodo3)then
+                     nsn=1    !the neighbor is in a triangle
                      goto 70
                    endif
                  enddo
 70               continue
-                 nnei=0
+
                  if(nsn.eq.0)then
-                   do k3=npunteroini(nodo3),npunterofin(nodo3) !si el nodo3 tiene un vecino
-                   if(nconnectivity(k3).ne.nodo1)then ! que no es el nodo 1
-                     do k4=npunteroini(nodo2),npunterofin(nodo2)
-                     if(nconnectivity(k4).ne.nodo1)then
-                     if(nconnectivity(k3).eq.nconnectivity(k4))then ! y que está conectado con el nodo2
-                       nnei=1 !marcamos el nodo3 como malo
-                       goto 71
-                     endif
-                     endif
-                     enddo
-                   endif
-                   enddo
-71                 continue
-                 endif
-                 if((nsn.eq.0).and.(nnei.eq.0))then !si el nodo3 no esta marcado como malo, o metemos en ndsv1
                    ndsv1=ndsv1+1
                    nvec1(ndsv1)=nodo3
-                   !write(6,*)'vector 1 ',nodo1,nodo2,ndsv1,nodo3
+*                   write(6,*)'vector 1 ',nodo1,nodo2,ndsv1,nodo3
                  endif
                endif
                endif
                enddo
 
-               ndsv2=0
+               ndsv2=0 !adding neighbors of node2 which are not in triangles with node1 and with degree >1
                do j2=npunteroini(nodo2),npunterofin(nodo2)
                nodo4=nconnectivity(j2)
                if(ndegree(nodo4).gt.1)then
@@ -254,66 +254,77 @@
                    endif
                  enddo
 80               continue
-                 nnei=0
+
                  if(nsn.eq.0)then
-                   do k3=npunteroini(nodo4),npunterofin(nodo4)
-                   if(nconnectivity(k3).ne.nodo2)then
-                     do k4=npunteroini(nodo1),npunterofin(nodo1)
-                     if(nconnectivity(k4).ne.nodo2)then
-                     if(nconnectivity(k3).eq.nconnectivity(k4))then
-                       nnei=1
-                       goto 81
-                     endif
-                     endif
-                     enddo
-                   endif
-                   enddo
-81                 continue
-                 endif
-                 if((nsn.eq.0).and.(nnei.eq.0))then
                    ndsv2=ndsv2+1
                    nvec2(ndsv2)=nodo4
-                   !write(6,*)'vector 2 ',nodo1,nodo2,ndsv2,nodo4
+*                   write(6,*)'vector 2 ',nodo1,nodo2,ndsv2,nodo4
                  endif
                endif
                endif
                enddo
 
+               nnor=0
                do k3=1,ndsv1
-               do k4=1,ndsv2 !sumamos posibles pentagonos
-                 pentagonsP = pentagonsP + 
-     +           MIN(ndegree(nvec1(k3))-1, ndegree(nvec1(k4))-1) 
-                 do k5=npunteroini(nvec1(k3)),npunterofin(nvec1(k3))
+               do k4=1,ndsv2
+                 nnei=0
                  do k6=npunteroini(nvec2(k4)),npunterofin(nvec2(k4))
-                   if(nconnectivity(k5).eq.nconnectivity(k6))then
-                     nin=0
-                     do k7=1,mledge
-                       if(nvec(k7).eq.nconnectivity(k5))then
-                         nin=1
+                   nodo6=nconnectivity(k6)
+                   if(nodo6.eq.nvec1(k3))then
+                     nnei=1   ! the link is in a square
+                   endif
+                 enddo
+
+                 if(nnei.eq.0)then
+                   do k5=npunteroini(nvec1(k3)),npunterofin(nvec1(k3))
+                   nodo5=nconnectivity(k5)
+                   do k6=npunteroini(nvec2(k4)),npunterofin(nvec2(k4))
+                     if(nodo5.eq.nconnectivity(k6))then
+
+                       nin=0
+                       do j2=npunteroini(nodo1),npunterofin(nodo1)
+                         nodo3=nconnectivity(j2)
+                         if(nodo3.eq.nodo5)then
+                           nin=1  !node5 is connected to node1
+                           goto 90
+                         endif
+                       enddo
+                       do j2=npunteroini(nodo2),npunterofin(nodo2)
+                         nodo3=nconnectivity(j2)
+                         if(nodo3.eq.nodo5)then
+                           nin=1  !node5 is connected to node2
+                           goto 90
+                         endif
+                       enddo
+
+                       if(nin.eq.0)then
+                         mpent=mpent+1
+*                         write(6,*)'triangle ',nodo1,nodo2,nvec1(k3),
+*     +                      nvec2(k4),nodo5
                          goto 90
                        endif
-                     enddo
-90                   continue
-                     
-                     if(nin.eq.0)then
-                       mpent=mpent+1
-                       goto 100
+
                      endif
-                    endif
-                  enddo
-                  enddo
-100               continue
-                enddo
-                enddo
-                !write(6,*)ndsv1,ndsv2,mpent
+                   enddo  !checking neighbors of neighbors of node2
+90                 continue
+                   enddo  !checking neighbors of neighbors of node1
+                   nnor=nnor+(ndegree(nvec1(k3))-1)*
+     +                       (ndegree(nvec2(k4))-1)
+                 endif    !if nnei
+
+               enddo   !enddo ndsv1
+               enddo   !enddo ndsv2
+                
 
                ntp=ntp+mpent
                if(mpent.gt.0)then
-                 xpent=dble(mpent)/(dble(ndsv1)*dble(ndsv2))
+                 xpent=dble(mpent)/dble(nnor)
+*                 write(6,*)'normalization pentagons ',mpent,nnor
                else
                  xpent=0.0D0
                endif
                xpiter=xpiter+xpent
+               x2piter=x2piter+xpent**2
 
               endif !endif more than m in p
 
@@ -321,19 +332,20 @@
 
             enddo   !enddo edges
 
-            xceiter=xceiter/dble(nl1)		
-            xsqiterMA=xsqiter/dble(nl1)
-            write(6,*)"pentagonsP"
-            write(6,*)pentagonsP
-            write(6,*)"nl1"
-            write(6,*)nl1
-            write(6,*)"xpiter"
-            write(6,*)xpiter
-			xsqiterP=xsqiter/dble(squaresP)
-            xpiterMA=xpiter/dble(nl1)
-            xpiterP=xpiter/dble(pentagonsP)
+            xceiter=xceiter/dble(nl1)
+            xsqiter=xsqiter/dble(nl1)
+            xpiter=xpiter/dble(nl1)
+
+            x2ceiter=x2ceiter/dble(nl1)
+            xerrorace=dsqrt(x2ceiter-xceiter**2)/dsqrt(dble(nl1))
+            x2sqiter=x2sqiter/dble(nl1)
+            xerrorasq=dsqrt(x2sqiter-xsqiter**2)/dsqrt(dble(nl1))
+            x2piter=x2piter/dble(nl1)
+            xerrorap=dsqrt(x2piter-xpiter**2)/dsqrt(dble(nl1))
+
             open(1,file=fileout,status='unknown')
-            write(1,*)xceiter,",",xsqiterMA,",",xsqiterP
-     +           ,",",xpiterMA,",",xpiterP,",",NODOS,",",nlist
+            write(1,*)xceiter,",",xsqiter,",",xpiter,",",NODOS,",",nlist
             close(1)
+
+
       end
