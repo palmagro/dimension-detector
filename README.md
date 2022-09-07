@@ -29,6 +29,14 @@ The workflow to detect the optimal dimension of a given network is:
     
 The following is a brief description of the codes contained in each folder (more information can be found in the corresponding sh and py files).
 
+# cyclesmap
+
+Contains the program cyclesmap to calculate the number of chordless cycles of length 3,4 and 5 of a given network. 
+
+Parameters:
+
+- The name of a file contaning an edge list of a network.
+
 # create_SD
 
 Contains the script create_SD.sh to generate $\mathbb{S}^D$  surrogates of a given network. 
