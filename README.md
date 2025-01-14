@@ -1,5 +1,5 @@
 # Detecting the ultra low dimensionality of real networks
-Please see the original research at XXX.
+Please see the original research [here](https://www.nature.com/articles/s41467-022-33685-z).
 
 This repository contains four folders:
 
